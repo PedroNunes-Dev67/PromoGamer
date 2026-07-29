@@ -38,24 +38,11 @@ public class CheapSharkDealServiceTest {
         // Arrange
 
         CheapSharkDealDTO deal = new CheapSharkDealDTO(
-                "ELDENRING",
                 "ELDEN RING",
                 "12345",
-                "1",
-                "999",
-                "149.99",
-                "249.99",
-                "1",
-                "40.00",
-                "96",
-                "Overwhelmingly Positive",
-                "97",
-                "500000",
                 "1245620",
-                1642118400L,
-                1710000000L,
-                "9.8",
-                "https://cdn.cheapshark.com/thumb.jpg"
+                "97",
+                1710000000L
         );
 
         List<CheapSharkDealDTO> expectedDeals = List.of(deal);
@@ -79,9 +66,7 @@ public class CheapSharkDealServiceTest {
         CheapSharkDealDTO returnedDeal = result.getFirst();
 
         assertEquals("ELDEN RING", returnedDeal.title());
-        assertEquals("149.99", returnedDeal.salePrice());
-        assertEquals("249.99", returnedDeal.normalPrice());
-        assertEquals("1", returnedDeal.storeID());
+        assertEquals("97", returnedDeal.steamRatingPercent());
 
         verify(cheapSharkApiService).getDealsByStoreId(
                 "PromoGamer/1.0 (teste@teste.com)",
