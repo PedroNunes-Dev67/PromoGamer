@@ -1,0 +1,33 @@
+package com.PedroNunesDev.PromoGamer.service;
+
+import com.PedroNunesDev.PromoGamer.dto.DealDtoResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Slf4j
+public class DealScheduledService {
+
+    private final DealService dealService;
+    private static final Long STEAM_STORE_ID = 1L;
+    private static final Long FIRST_PAGE = 0L;
+
+    @Scheduled(cron = "0 0 8,18 * * *", zone = "America/Sao_Paulo")
+    public void registerNewDealsScheduled(){
+
+        try{
+            log.info("Execunting Scheduled for register new deals...");
+
+            List<DealDtoResponse> deals = dealService.registerDeals(STEAM_STORE_ID, FIRST_PAGE);
+
+            log.info("{} new deals registered.", deals.size());
+        } catch (Exception e) {
+            log.error("Error during scheduled deal registration. ", e);
+        }
+    }
+}
