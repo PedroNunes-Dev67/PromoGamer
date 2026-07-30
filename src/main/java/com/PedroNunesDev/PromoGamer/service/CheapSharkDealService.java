@@ -17,13 +17,20 @@ public class CheapSharkDealService {
     @Value("${spring.address.email}")
     private String addressEmail;
 
-    public List<CheapSharkDealDTO> getDealsByStore(Long storeId, Long pageNumber){
+    public List<CheapSharkDealDTO> getDealsByStore(Long storeId, Long pageNumber) {
 
-        log.info("Searching Deals in store with id: [{}] and page number: [{}]", storeId,pageNumber);
+        log.info("Searching deals in store [{}], page [{}]", storeId, pageNumber);
 
-        List<CheapSharkDealDTO> deals = cheapSharkApiService.getDealsByStoreId("PromoGamer/1.0 ("+addressEmail+")",storeId,pageNumber);
+        List<CheapSharkDealDTO> deals = cheapSharkApiService.getDealsByStoreId(
+                "PromoGamer/1.0 (" + addressEmail + ")",
+                storeId,
+                pageNumber
+        );
 
-        log.info("Searched completed, with size: [{}]", deals.size());
+        // Remove Deals where steamAppId = null
+        deals.removeIf(deal -> deal.steamAppId() == null);
+
+        log.info("Search completed. {} deals found.", deals.size());
 
         return deals;
     }
