@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/deals")
+@RequestMapping("/api/deals")
 @Tag(name="CheapShark Controller", description = "Searching deals using API by CheapShark")
 @RequiredArgsConstructor
 public class CheapSharkController {
