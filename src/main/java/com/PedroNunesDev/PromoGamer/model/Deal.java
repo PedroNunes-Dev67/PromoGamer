@@ -3,10 +3,12 @@ package com.PedroNunesDev.PromoGamer.model;
 import com.PedroNunesDev.PromoGamer.enums.DealEnumStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.jspecify.annotations.Nullable;
 import org.springframework.data.domain.Persistable;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -32,6 +34,10 @@ public class Deal implements Persistable<String>,Serializable {
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
     private DealEnumStatus dealEnumStatus;
+
+    @CreationTimestamp
+    @Column(name = "creation_date", nullable = false)
+    private LocalDateTime creationDate;
 
     @Transient
     @Builder.Default
