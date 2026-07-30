@@ -15,7 +15,6 @@ public class DealScheduledService {
 
     private final DealService dealService;
     private static final Long STEAM_STORE_ID = 1L;
-    private static final Long FIRST_PAGE = 0L;
 
     @Scheduled(cron = "0 0 8,18 * * *", zone = "America/Sao_Paulo")
     public void registerNewDealsScheduled(){
@@ -23,7 +22,7 @@ public class DealScheduledService {
         try{
             log.info("Execunting Scheduled for register new deals...");
 
-            List<DealDtoResponse> deals = dealService.registerDeals(STEAM_STORE_ID, FIRST_PAGE);
+            List<DealDtoResponse> deals = dealService.registerDeals(STEAM_STORE_ID);
 
             log.info("{} new deals registered.", deals.size());
         } catch (Exception e) {

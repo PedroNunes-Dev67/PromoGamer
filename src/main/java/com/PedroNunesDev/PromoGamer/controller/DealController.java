@@ -18,10 +18,9 @@ public class DealController {
     private final DealService dealService;
 
     @PostMapping
-    public ResponseEntity<List<DealDtoResponse>> registerDeals(@RequestParam Long storeId, @RequestParam Long pageNumber){
+    public ResponseEntity<List<DealDtoResponse>> registerDeals(@RequestParam Long storeId){
 
-
-        List<DealDtoResponse> deals = dealService.registerDeals(storeId,pageNumber);
+        List<DealDtoResponse> deals = dealService.registerDeals(storeId);
 
         return ResponseEntity.ok(deals);
     }

@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -23,55 +24,60 @@ public class DealService {
     private final CheapSharkDealService cheapSharkDealService;
     private final DealRepository dealRepository;
 
-    public List<DealDtoResponse> registerDeals(Long storeId, Long pageNumber){
+    public List<DealDtoResponse> registerDeals(Long storeId) {
+        long initialPageNumber = 0;
+        List<Deal> dealsSaved;
+        List<Deal> dealsForSaving = new ArrayList<>();
 
-        // Busca as promoções via API do CheapShhark
-        List<CheapSharkDealDTO> dealsSearched = cheapSharkDealService.getDealsByStore(storeId,pageNumber);
+        log.info("Iniciando busca de novas deals para storeId={}", storeId);
 
-        // Pega apenas os dealId dessas promoções
-        Set<String> dealsSearchedId = dealsSearched
-                .stream()
-                .map(CheapSharkDealDTO::dealID)
-                .collect(Collectors.toSet());
+        do {
+            log.debug("Buscando deals na página {} para storeId={}", initialPageNumber, storeId);
 
-        // Consulta no banco e pega apenas os dealId existentes no banco
-        Set<String> existingDealsId = dealRepository.getExistingDealsId(dealsSearchedId);
+            List<CheapSharkDealDTO> dealsSearched = cheapSharkDealService.getDealsByStore(storeId, initialPageNumber);
+            log.debug("Página {}: {} deals retornadas pela API do CheapShark", initialPageNumber, dealsSearched.size());
 
-        // Filtra a resposta da API, pegando apenas os que não tiverem o dealId já salvo
-        List<CheapSharkDealDTO> newDeals = dealsSearched.stream()
-                .filter(dto -> !existingDealsId.contains(dto.dealID()))
-                .toList();
+            Set<String> dealsSearchedId = dealsSearched
+                    .stream()
+                    .map(CheapSharkDealDTO::dealID)
+                    .collect(Collectors.toSet());
 
-        if (newDeals.isEmpty()) {
-            log.info("Nenhuma nova promoção encontrada...");
-            return List.of();
-        }
+            Set<String> existingDealsId = dealRepository.getExistingDealsId(dealsSearchedId);
+            log.debug("Página {}: {} deals já existentes no banco", initialPageNumber, existingDealsId.size());
 
-        // Cria uma lista de novas Deal para ser salva no banco
-        List<Deal> dealsForSaving = newDeals.stream()
-                .map(deal -> {
-                    return Deal.builder()
+            List<CheapSharkDealDTO> newDeals = dealsSearched.stream()
+                    .filter(dto -> !existingDealsId.contains(dto.dealID()))
+                    .toList();
+
+            log.info("Página {}: {} novas deals encontradas", initialPageNumber, newDeals.size());
+
+            dealsForSaving.addAll(newDeals.stream()
+                    .map(deal -> Deal.builder()
                             .dealId(deal.dealID())
                             .title(deal.title())
                             .dealEnumStatus(DealEnumStatus.PENDENTE)
                             .steamAppId(deal.steamAppId())
                             .steamRatingPercent(deal.steamRatingPercent())
-                            .build();
-                })
-                .toList();
+                            .build())
+                    .toList());
 
-        // Lista salva no banco
-        List<Deal> dealsSaved = dealRepository.saveAll(dealsForSaving);
+            initialPageNumber++;
+        } while (dealsForSaving.isEmpty() && initialPageNumber < 5);
 
-        // Retorna uma lista do DTO de Deal
+        if (dealsForSaving.isEmpty()) {
+            log.warn("Nenhuma nova deal encontrada para storeId={} após percorrer até a página {}", storeId, initialPageNumber);
+            return List.of();
+        }
+
+        dealsSaved = dealRepository.saveAll(dealsForSaving);
+        log.info("{} novas deals salvas no banco para storeId={}", dealsSaved.size(), storeId);
+
         return dealsSaved
                 .stream()
-                .map(deal -> {
-                    return new DealDtoResponse(
-                      deal.getDealId(),
-                      deal.getTitle(),
-                      deal.getSteamAppId()
-                    );
-                }).toList();
+                .map(deal -> new DealDtoResponse(
+                        deal.getDealId(),
+                        deal.getTitle(),
+                        deal.getSteamAppId()
+                )).toList();
     }
 }
