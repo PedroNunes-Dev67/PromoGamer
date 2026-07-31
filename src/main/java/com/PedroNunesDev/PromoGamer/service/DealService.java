@@ -5,10 +5,10 @@ import com.PedroNunesDev.PromoGamer.dto.DealDtoResponse;
 import com.PedroNunesDev.PromoGamer.enums.DealEnumStatus;
 import com.PedroNunesDev.PromoGamer.model.Deal;
 import com.PedroNunesDev.PromoGamer.repository.DealRepository;
-import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,5 +79,24 @@ public class DealService {
                         deal.getTitle(),
                         deal.getSteamAppId()
                 )).toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<DealDtoResponse> getAllDealsByStatus(String dealsEnumStatusType){
+
+        DealEnumStatus dealEnumStatus = DealEnumStatus.from(dealsEnumStatusType);
+
+        List<Deal> deals = dealRepository.getAllDealsByDealEnumStatus(dealEnumStatus);
+
+        if (deals.isEmpty()) return List.of();
+
+        return deals
+                .stream()
+                .map(deal -> new DealDtoResponse(
+                  deal.getDealId(),
+                  deal.getTitle(),
+                  deal.getSteamAppId()
+                ))
+                .toList();
     }
 }
