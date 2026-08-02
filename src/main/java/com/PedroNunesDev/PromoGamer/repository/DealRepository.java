@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public interface DealRepository extends JpaRepository<Deal,String> {
@@ -22,4 +23,6 @@ public interface DealRepository extends JpaRepository<Deal,String> {
     WHERE d.dealEnumStatus = :enum
 """)
     List<Deal> getAllDealsByDealEnumStatus(@Param("enum") DealEnumStatus dealEnumStatus);
+
+    Optional<Deal> findFirstByDealEnumStatus(DealEnumStatus status);
 }
