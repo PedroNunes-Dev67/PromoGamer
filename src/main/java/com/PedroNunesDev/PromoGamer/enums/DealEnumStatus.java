@@ -3,6 +3,7 @@ package com.PedroNunesDev.PromoGamer.enums;
 public enum DealEnumStatus {
 
     PENDENTE("PENDENTE"),
+    PROCESSADO("PROCESSADO"),
     CONCLUIDO("CONCLUIDO"),
     IGNORADO("IGNORADO");
 
