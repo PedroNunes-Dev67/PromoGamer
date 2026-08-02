@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 public class Deal implements Persistable<String>,Serializable {
 
     @Id
-    @Column(name = "deal_id", unique = true)
+    @Column(name = "id_deal", unique = true)
     private String dealId;
 
     @Column(nullable = false)
@@ -27,6 +27,9 @@ public class Deal implements Persistable<String>,Serializable {
 
     @Column(nullable = false, name = "steam_app_id")
     private String steamAppId;
+
+    @OneToOne(mappedBy = "deal", cascade = CascadeType.ALL)
+    private Message message;
 
     @Column(name = "steam_rating_percent")
     private String steamRatingPercent;
@@ -51,5 +54,9 @@ public class Deal implements Persistable<String>,Serializable {
     @Override
     public boolean isNew() {
         return isNew;
+    }
+
+    public void updateStatus(DealEnumStatus dealEnumStatus){
+        this.dealEnumStatus = dealEnumStatus;
     }
 }
