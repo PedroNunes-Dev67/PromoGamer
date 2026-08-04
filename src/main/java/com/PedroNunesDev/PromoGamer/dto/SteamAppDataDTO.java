@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public record SteamAppDataDTO(
         String name,
-        @JsonProperty("steam_appid") Long steamAppId,
+        @JsonProperty("steam_appid") String steamAppId,
         @JsonProperty("header_image") String headerImage,
         @JsonProperty("price_overview") SteamPriceOverviewDTO priceOverview
 ) {}
