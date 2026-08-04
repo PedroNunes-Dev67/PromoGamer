@@ -11,6 +11,7 @@ import static org.mockito.Mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -45,7 +46,8 @@ public class CheapSharkDealServiceTest {
                 1710000000L
         );
 
-        List<CheapSharkDealDTO> expectedDeals = List.of(deal);
+        List<CheapSharkDealDTO> expectedDeals = new ArrayList<>();
+        expectedDeals.add(deal);
 
         when(cheapSharkApiService.getDealsByStoreId(
                 "PromoGamer/1.0 (teste@teste.com)",
