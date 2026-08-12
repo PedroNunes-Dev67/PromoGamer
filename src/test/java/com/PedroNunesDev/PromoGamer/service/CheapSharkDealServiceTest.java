@@ -2,6 +2,8 @@ package com.PedroNunesDev.PromoGamer.service;
 
 import com.PedroNunesDev.PromoGamer.dto.CheapSharkDealDTO;
 import static org.junit.jupiter.api.Assertions.*;
+
+import static org.assertj.core.api.Assertions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -105,5 +107,21 @@ public class CheapSharkDealServiceTest {
                         1L,
                         0L
                 );
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenStoreIdIsNull(){
+
+        assertThatThrownBy(() -> cheapSharkDealService.getDealsByStore(null, 0L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Store id cannot it null");
+    }
+
+    @Test
+    void shouldThrowIllegalArgumentExceptionWhenPageNumberIsNull(){
+
+        assertThatThrownBy(() -> cheapSharkDealService.getDealsByStore(1L, null))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Page number cannot it null");
     }
 }
