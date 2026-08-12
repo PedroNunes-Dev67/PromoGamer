@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.util.Assert;
 
 import java.util.List;
 
@@ -18,6 +19,9 @@ public class CheapSharkDealService {
     private String addressEmail;
 
     public List<CheapSharkDealDTO> getDealsByStore(Long storeId, Long pageNumber) {
+
+        Assert.notNull(storeId, "Store id cannot it null");
+        Assert.notNull(pageNumber, "Page number cannot it null");
 
         log.info("Searching deals in store [{}], page [{}]", storeId, pageNumber);
 
