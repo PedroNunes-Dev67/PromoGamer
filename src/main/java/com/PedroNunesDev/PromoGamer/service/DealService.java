@@ -25,8 +25,8 @@ public class DealService {
     private final DealRepository dealRepository;
 
     public List<DealDtoResponse> registerDeals(Long storeId) {
+
         long initialPageNumber = 0;
-        List<Deal> dealsSaved;
         List<Deal> dealsForSaving = new ArrayList<>();
 
         log.info("Iniciando busca de novas deals para storeId={}", storeId);
@@ -69,7 +69,7 @@ public class DealService {
             return List.of();
         }
 
-        dealsSaved = dealRepository.saveAll(dealsForSaving);
+        List<Deal> dealsSaved = dealRepository.saveAll(dealsForSaving);
         log.info("{} novas deals salvas no banco para storeId={}", dealsSaved.size(), storeId);
 
         return dealsSaved
