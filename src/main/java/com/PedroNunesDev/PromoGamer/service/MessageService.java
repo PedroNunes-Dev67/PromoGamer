@@ -2,6 +2,7 @@ package com.PedroNunesDev.PromoGamer.service;
 
 import com.PedroNunesDev.PromoGamer.dto.MessageDtoResponse;
 import com.PedroNunesDev.PromoGamer.enums.DealEnumStatus;
+import com.PedroNunesDev.PromoGamer.exception.DealNotFoundSteamException;
 import com.PedroNunesDev.PromoGamer.exception.ResourceNotFoundException;
 import com.PedroNunesDev.PromoGamer.mapper.MessageMapper;
 import com.PedroNunesDev.PromoGamer.model.Deal;
@@ -32,7 +33,7 @@ public class MessageService {
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum promoção para envio encontrada"));
 
         Message message = steamService.buildMessageFromDeal(deal)
-                .orElseThrow(() -> new RuntimeException("Ocorreu um erro ao construir mensagem de envio"));
+                .orElseThrow(() -> new DealNotFoundSteamException("Ocorreu um erro ao construir mensagem de envio, promoção não foi encontrada na Steam"));
 
         Message novaMessage = messageRepository.save(message);
 

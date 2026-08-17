@@ -67,6 +67,17 @@ public class GlobalExceptionHandler {
         );
     }
 
+    @ExceptionHandler(DealNotFoundSteamException.class)
+    public ResponseEntity<ErrorResponse> handleDealNotFoundSteamException(DealNotFoundSteamException e, HttpServletRequest request){
+
+        log.error("Promoção não foi encontrada para busca de detalhes na API da Steam");
+        return buildResponse(
+                HttpStatus.NOT_FOUND,
+                e.getMessage(),
+                request
+        );
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException ex, HttpServletRequest request) {
         log.warn(
