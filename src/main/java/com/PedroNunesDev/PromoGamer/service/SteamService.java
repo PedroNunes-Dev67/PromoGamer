@@ -3,6 +3,7 @@ package com.PedroNunesDev.PromoGamer.service;
 import com.PedroNunesDev.PromoGamer.dto.SteamAppDataDTO;
 import com.PedroNunesDev.PromoGamer.dto.SteamDetailsWrapper;
 import com.PedroNunesDev.PromoGamer.dto.SteamPackageDataDTO;
+import com.PedroNunesDev.PromoGamer.enums.DealEnumStatus;
 import com.PedroNunesDev.PromoGamer.enums.DealSourceType;
 import com.PedroNunesDev.PromoGamer.model.Deal;
 import com.PedroNunesDev.PromoGamer.model.Message;
@@ -60,6 +61,9 @@ public class SteamService {
         }
 
         log.warn("Steam app id [{}] não é válido nem como app nem como package. Deal será ignorada.", steamAppId);
+
+        deal.setDealEnumStatus(DealEnumStatus.IGNORADO);
+
         return Optional.empty();
     }
 
