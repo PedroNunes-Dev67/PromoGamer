@@ -62,8 +62,6 @@ public class SteamService {
 
         log.warn("Steam app id [{}] não é válido nem como app nem como package. Deal será ignorada.", steamAppId);
 
-        deal.setDealEnumStatus(DealEnumStatus.IGNORADO);
-
         return Optional.empty();
     }
 

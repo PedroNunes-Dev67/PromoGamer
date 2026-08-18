@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -32,10 +34,15 @@ public class MessageService {
         Deal deal = dealRepository.findFirstByDealEnumStatus(DealEnumStatus.PENDENTE)
                 .orElseThrow(() -> new ResourceNotFoundException("Nenhum promoção para envio encontrada"));
 
-        Message message = steamService.buildMessageFromDeal(deal)
-                .orElseThrow(() -> new DealNotFoundSteamException("Ocorreu um erro ao construir mensagem de envio, promoção não foi encontrada na Steam"));
+        Optional<Message> message = steamService.buildMessageFromDeal(deal);
 
-        Message novaMessage = messageRepository.save(message);
+        if (message.isEmpty()){
+            deal.updateStatus(DealEnumStatus.IGNORADO);
+            dealRepository.save(deal);
+            return null;
+        }
+
+        Message novaMessage = messageRepository.save(message.get());
 
         deal.updateStatus(DealEnumStatus.PROCESSADO);
         dealRepository.save(deal);
